@@ -1,21 +1,19 @@
 module counter_4b (
     input clk,
     input reset,
-    output reg [3:0] count,
-    output reg overflow
+    output [3:0] count,
+    output overflow
 );
     reg [4:0] counter;
 
-    initial begin
-        counter = 0;
-        overflow = 0;
-    end
+    initial
+        counter <= 0;
 
     assign count = counter[3:0];
     assign overflow = counter[4];
 
     always @(posedge clk) begin
-        if (~reset) begin
+        if (reset) begin
             counter <= 0;
         end else begin
             counter <= counter + 1;

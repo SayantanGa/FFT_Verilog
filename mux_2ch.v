@@ -5,7 +5,10 @@ module mux_2ch (
 
     input [WIDTH - 1 : 0] inA, inB;
     input clk, sel;
-    output [WIDTH - 1 : 0] out;
+    output reg [WIDTH - 1 : 0] out;
+
+    initial
+        out <= 0;
 
     always @(posedge clk) begin
         if (sel) begin

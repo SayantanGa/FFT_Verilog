@@ -3,8 +3,8 @@ module right_shift (
 );
     parameter WIDTH = 4;
 
-    input clk, clr, s_in,
-    output reg [WIDTH - 1  : 0] p_out
+    input clk, clr, s_in;
+    output reg [WIDTH - 1  : 0] p_out;
 
     initial begin
         p_out = 0;

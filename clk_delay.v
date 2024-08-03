@@ -6,9 +6,9 @@ module clk_delay (
     parameter DELAY = 1;
     parameter WIDTH = 32;
 
-    input clk, clear,
-    input [WIDTH-1:0] data_in,
-    output reg [WIDTH-1:0] data_out
+    input clk, clear;
+    input [WIDTH-1:0] data_in;
+    output reg [WIDTH-1:0] data_out;
 
     reg [WIDTH-1:0] DFF[DELAY-1:0];
 

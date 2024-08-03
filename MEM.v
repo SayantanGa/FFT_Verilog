@@ -5,13 +5,13 @@ module MEM (
     input [15:0] Xr, Xi, Yr, Yi,
     output [15:0] G_real, G_imag, H_real, H_imag
 );
-    wire [15:0] dataA0_r, dataA0_i, dataB_r, dataB_i;
+    wire [15:0] dataA0_r, dataA0_i, dataB0_r, dataB0_i, dataB1_r, data_B1_i;
     wire [4:0] addr_a0, addr_b0, addr_a1, addr_b1;
     wire bank1_wr, bank0_a_wr, bank0_b_wr;
 
     clk_delay # (1, 1) MEM_bank0_wr_en_delay (
         .clk(clk),
-        .clear(1'b1),
+        .clear(1'b0),
         .data_in(bank0_write_en),
         .data_out(bank0_b_wr)
     );
@@ -22,7 +22,7 @@ module MEM (
         .inB(1'b1),
         .sel(load_data_write),
         .out(bank0_a_wr)
-    )
+    );
 
     mux_2ch # (16) MEM_mux_dataA0_r (
         .clk(clk),
@@ -54,13 +54,13 @@ module MEM (
         .clk(clk),
         .inA(read_G_addr),
         .inB(write_G_addr),
-        .inC(load_data_addr),
-        .inD(load_data_addr),
-        .sel({rw_addr_en, load_data_write}),
+        .inC({load_data_addr[0],load_data_addr[1],load_data_addr[2],load_data_addr[3],load_data_addr[4]}),
+        .inD({load_data_addr[0],load_data_addr[1],load_data_addr[2],load_data_addr[3],load_data_addr[4]}),
+        .sel({load_data_write, rw_addr_en}),
         .out(addr_a1)
     );
 
-    mux_2ch # (16) MEM_mux_addr_B0 (
+    mux_2ch # (5) MEM_mux_addr_B0 (
         .clk(clk),
         .inA(read_H_addr),
         .inB(write_H_addr),
@@ -68,7 +68,7 @@ module MEM (
         .out(addr_b0)
     );
 
-    mux_2ch # (16) MEM_mux_addr_B1 (
+    mux_2ch # (5) MEM_mux_addr_B1 (
         .clk(clk),
         .inA(read_H_addr),
         .inB(write_H_addr),
@@ -78,35 +78,35 @@ module MEM (
 
     clk_delay # (1, 16) MEM_delay_1 (
         .clk(clk),
-        .clear(1'b1),
+        .clear(1'b0),
         .data_in(Yr),
-        .data_out(dataB_r)
+        .data_out(dataB0_r)
     );
     
     clk_delay # (1, 16) MEM_delay_2 (
         .clk(clk),
-        .clear(1'b1),
+        .clear(1'b0),
         .data_in(Yi),
-        .data_out(dataB_i)
+        .data_out(dataB0_i)
     );
 
     clk_delay # (1, 16) MEM_delay_3 (
         .clk(clk),
-        .clear(1'b1),
+        .clear(1'b0),
         .data_in(Xr),
-        .data_out(dataB_r)
+        .data_out(dataB1_r)
     );
 
     clk_delay # (1, 16) MEM_delay_4 (
         .clk(clk),
-        .clear(1'b1),
+        .clear(1'b0),
         .data_in(Xi),
-        .data_out(dataB_i)
+        .data_out(dataB1_i)
     );
 
-    clk_delay # (1, 16) MEM_delay_5 (
+    clk_delay # (1, 1) MEM_delay_5 (
         .clk(clk),
-        .clear(1'b1),
+        .clear(1'b0),
         .data_in(bank1_write_en),
         .data_out(bank1_wr)
     );
@@ -118,7 +118,7 @@ module MEM (
         .data_a_wr(bank0_a_wr),
         .data_b_wr(bank0_b_wr),
         .data_a(dataA0_r),
-        .data_b(dataB_r),
+        .data_b(dataB0_r),
         .addr_a(addr_a0),
         .addr_b(addr_b0),
         .data_a_out(out_r11),
@@ -130,7 +130,7 @@ module MEM (
         .data_a_wr(bank0_a_wr),
         .data_b_wr(bank0_b_wr),
         .data_a(dataA0_i),
-        .data_b(dataB_i),
+        .data_b(dataB0_i),
         .addr_a(addr_a0),
         .addr_b(addr_b0),
         .data_a_out(out_r21),
@@ -141,8 +141,8 @@ module MEM (
         .clk(clk),
         .data_a_wr(bank1_wr),
         .data_b_wr(bank1_wr),
-        .data_a(dataB_r),
-        .data_b(dataB_r),
+        .data_a(dataB1_r),
+        .data_b(dataB0_r),
         .addr_a(addr_a1),
         .addr_b(addr_b1),
         .data_a_out(out_r31),
@@ -153,8 +153,8 @@ module MEM (
         .clk(clk),
         .data_a_wr(bank1_wr),
         .data_b_wr(bank1_wr),
-        .data_a(datab_i),
-        .data_b(dataB_i),
+        .data_a(dataB1_i),
+        .data_b(dataB0_i),
         .addr_a(addr_a1),
         .addr_b(addr_b1),
         .data_a_out(out_r41),

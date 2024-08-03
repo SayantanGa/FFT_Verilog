@@ -23,14 +23,14 @@ module AGU (
         .din({AGU_index_counter_count, 1'b0}),
         .clk(clk),
         .clr(AGU_clear_hold),
-        .dout(AGU_wire_1)
+        .dout(AGU_wire_2)
     );
 
-    clock_delay # (1, 5) AGU_delay_1 (
+    clk_delay # (1, 5) AGU_delay_1 (
         .clk(clk),
         .clear(AGU_clear_hold),
         .data_in({AGU_index_counter_count, 1'b0}),
-        .dout(AGU_wire_2)
+        .data_out(AGU_wire_1)
     );
 
     wire AGU_wire_3;
@@ -43,8 +43,8 @@ module AGU (
         .Q(AGU_wire_3)
     );
     
-    wire [2:0] AGU_wire_4;
-    wire AGU_wire_5, AGU_wire_6;
+    wire [2:0] AGU_wire_4, AGU_wire_6;
+    wire AGU_wire_5;
 
     counter_3bm5 AGU_counter_1 (
         .clk(AGU_wire_3),
@@ -53,11 +53,11 @@ module AGU (
         .overflow(AGU_wire_5)
     );
 
-    clock_delay # (1, 3) AGU_delay_2 (
+    clk_delay # (1, 3) AGU_delay_2 (
         .clk(clk),
         .clear(AGU_clear_hold),
         .data_in(AGU_wire_4),
-        .dout(AGU_wire_6)
+        .data_out(AGU_wire_6)
     );
 
     rotate_left_5b AGU_rotator_1 (
@@ -80,7 +80,7 @@ module AGU (
     right_shift AGU_shifter_1 (
         .clk(AGU_wire3),
         .clr(AGU_clear_hold),
-        .s_in(AGU_wire_6),
+        .s_in(1'b1),
         .p_out(AGU_wire_7)
     );
 
@@ -127,7 +127,7 @@ module AGU (
         .reset(1'b1),
         .preset(1'b1),
         .S(~AGU_wire_10 & AGU_wire_9),
-        .R(AGU_wire_10),
+        .R(AGU_wire_5 & AGU_index_counter_overflow),
         .Q(AGU_wire_11)
     );
 

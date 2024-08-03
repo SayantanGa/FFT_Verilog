@@ -2,7 +2,7 @@ module rotate_left_5b (
     input clk, clr,
     input [2:0] S,
     input [4:0] in,
-    output [4:0] out
+    output reg [4:0] out
 );
     initial begin
         out = in;
