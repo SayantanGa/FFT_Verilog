@@ -25,6 +25,7 @@ cx_multiplier b_w_multiplier (
 );
 
 clk_delay #(
+    .DELAY(4),
     .WIDTH(32)
 ) in_a_delay (
     .clk(clk),
